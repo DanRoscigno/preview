@@ -1,18 +1,27 @@
 name: CI
-on: [push]
+on: [pull_request]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      - name: Setup Environment
+        run: |
+          export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
+          echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR" >> $GITHUB_ENV
+          echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR"
+      
       - name: build
         env:
+          DOSSIER_BASE_URL: /${{ env.PREVIEW_BRANCH_DIR }}/
           AWS_DEFAULT_REGION: "us-east-1"
           AWS_S3_BUCKET: "doc-pr-preview"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_BUCKET_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BUCKET_ACCESS_SECRET }}
-          PR_ID: "pr-name"
+          PR_ID: ${{ env.PREVIEW_BRANCH_DIR }}
         run: |
           mkdir -p ~/.aws
           touch ~/.aws/credentials
