@@ -1,0 +1,82 @@
+## NOTES FOR ANYONE I'VE SHARED THIS WITH
+# There are a few patterns you will notice that are artifacts of internal standards.
+# Particularly, the pattern of using a full hash for the actions, e.g. `users: actions/checkout@full-hash-here`
+# There is no specific need for this other than internal security standards, you can change to @v2 etc
+
+# IN THIS FILE THERE ARE 2 VARS IN STATIC CODE THAT NEED REPLACING: $ORG AND $REPO
+# These are used to form github urls. 
+
+name: Branch preview cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  clean:
+    name: Clean
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          ref: gh-pages
+
+      - name: Setup Environment
+        run: |
+          export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
+          echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR" >> $GITHUB_ENV
+      
+      - name: Clean ${{ env.PREVIEW_BRANCH_DIR }}
+        run: rm -rf $PREVIEW_BRANCH_DIR
+
+      - name: Deploy to GitHub Pages
+        continue-on-error: true # If the commit fails it was likely due to it being empty
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit --no-verify -m "[BRANCH PREVIEW] Cleaned ${{ env.PREVIEW_BRANCH_DIR }} due to closing #${{ github.event.pull_request.number }}"
+          git push
+
+      - name: Find deployment
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da
+        id: find-deployment
+        with:
+          script: |
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: process.env.GITHUB_HEAD_REF,
+              environment: `preview ${process.env.PREVIEW_BRANCH_DIR}`,
+              per_page: 1
+            });
+            return deployments.data[0].id;
+
+      - name: Set deployment to inactive
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da
+        with:
+          script: |
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.find-deployment.outputs.result }},
+              state: 'inactive',
+              log_url: `https://github.com/$ORG/$REPO/actions/runs/${context.runId}`,
+              mediaType: {
+                previews: ['flash', 'ant-man']
+              }
+            });
+
+      - name: Remove deployment environment
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da
+        with:
+          github-token: ${{ secrets.AWS_CICD_PAT }}
+          script: |
+            await github.request('DELETE /repos/{owner}/{repo}/environments/{environment_name}', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment_name: `preview ${process.env.PREVIEW_BRANCH_DIR}`
+            });
+
+
