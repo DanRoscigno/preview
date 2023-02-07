@@ -13,7 +13,9 @@ jobs:
           export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
           echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR" >> $GITHUB_ENV
           echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR"
-      
+          export PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV      
+          echo "PR_NUMBER=$PR_NUMBER"
       - name: build
         env:
           DOSSIER_BASE_URL: /${{ env.PREVIEW_BRANCH_DIR }}/
@@ -38,5 +40,16 @@ jobs:
           aws s3 sync ./build s3://${AWS_S3_BUCKET}/${PR_ID}/ --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
           echo "Cleaning up things"
           rm -rf ~/.aws
+      - name: Add Comment to Pull Request if Success
+        if: ${{ success() }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+            await github.rest.issues.createComment({
+            owner: context.repo.owner, 
+            repo: context.repo.repo, 
+            issue_number: ${{ env.PR_NUMBER }},
+            body: 'Its Success'
+            });
 
 
