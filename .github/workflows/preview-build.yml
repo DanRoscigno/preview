@@ -13,4 +13,21 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_BUCKET_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BUCKET_ACCESS_SECRET }}
           PROJECT_NAME: "preview"
+        run: |
+          mkdir -p ~/.aws
+          touch ~/.aws/credentials
+          echo "[default]
+          aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+          aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
+          echo "Install yarn"
+          npm install -g yarn
+          echo "Install dependencies"
+          yarn install
+          echo "Run yarn build"
+          yarn run build
+          echo "Copying to website folder"
+          aws s3 sync ./build/${PROJECT_NAME} s3://${AWS_S3_BUCKET} --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
+          echo "Cleaning up things"
+          rm -rf ~/.aws
+
 
