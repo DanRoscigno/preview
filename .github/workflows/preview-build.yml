@@ -12,7 +12,7 @@ jobs:
           AWS_S3_BUCKET: "doc-pr-preview"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_BUCKET_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BUCKET_ACCESS_SECRET }}
-          PROJECT_NAME: "preview"
+          PR_ID: "pr-name"
         run: |
           mkdir -p ~/.aws
           touch ~/.aws/credentials
@@ -26,7 +26,7 @@ jobs:
           echo "Run yarn build"
           yarn run build
           echo "Copying to website folder"
-          aws s3 sync ./build s3://${AWS_S3_BUCKET} --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
+          aws s3 sync ./build s3://${AWS_S3_BUCKET}/${PR_ID}/ --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
           echo "Cleaning up things"
           rm -rf ~/.aws
 
