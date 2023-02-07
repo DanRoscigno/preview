@@ -41,15 +41,12 @@ jobs:
           aws s3 sync ./build s3://${AWS_S3_BUCKET}/${PR_ID}/ --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
           echo "Cleaning up things"
           rm -rf ~/.aws
-      - uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
+
+      - name: Report
+        run: gh issue comment $ISSUE --body "Thank you for opening this PR!"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ github.event.issue.html_url }}
+
 
 
