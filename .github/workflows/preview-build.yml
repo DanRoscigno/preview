@@ -10,6 +10,7 @@ jobs:
         run: |
           export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
           echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR" >> $GITHUB_ENV
+          echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR"
       
       - name: build
         env:
