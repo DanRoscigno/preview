@@ -43,10 +43,10 @@ jobs:
           rm -rf ~/.aws
 
       - name: Report
-        run: gh issue comment $ISSUE --body "Thank you for opening this PR!"
+        run: gh issue comment $PR --body "Thank you for opening this PR!"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE: ${{ github.event.issue.html_url }}
+          PR: ${{ env.PR_NUMBER }}
 
 
 
