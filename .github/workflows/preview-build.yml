@@ -18,7 +18,7 @@ jobs:
           AWS_S3_BUCKET: "doc-pr-preview"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_BUCKET_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BUCKET_ACCESS_SECRET }}
-          PR_ID: ${{ PREVIEW_BRANCH_DIR }}
+          PR_ID: ${{ env.PREVIEW_BRANCH_DIR }}
         run: |
           mkdir -p ~/.aws
           touch ~/.aws/credentials
