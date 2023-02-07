@@ -42,16 +42,15 @@ jobs:
         env:
           # NOTE: You should update the following for your repo. Likely the repo url could be pulled from env vars
           DOSSIER_BASE_URL: /${{ env.PREVIEW_BRANCH_DIR }}/
-          DOSSIER_EDIT_BASE_URL: https://github.com/danroscigno/preview/edit/${{ env.GITHUB_HEAD_REF }}/website
+          DOSSIER_EDIT_BASE_URL: https://github.com/danroscigno/preview/edit/${{ env.GITHUB_HEAD_REF }}/
         run: |
-          cd ./website
           npm run build
       
       - name: Store Build Artifact
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
         with:
           name: branch-preview
-          path: website/build
+          path: ./build
           if-no-files-found: error
 
   deploy:
