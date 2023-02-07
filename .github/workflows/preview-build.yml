@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
       - name: Setup Environment
         run: |
           export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
