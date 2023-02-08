@@ -8,14 +8,14 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 0
+          
       - name: Setup Environment
         run: |
           export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
           echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR" >> $GITHUB_ENV
-          echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR"
+
           export PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV      
-          echo "PR_NUMBER=$PR_NUMBER"
       
       - name: build
         env:
@@ -31,22 +31,22 @@ jobs:
           echo "[default]
           aws_access_key_id = ${AWS_ACCESS_KEY_ID}
           aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
-          echo "Install yarn"
+
           npm install -g yarn
-          echo "Install dependencies"
           yarn install
-          echo "Run yarn build"
-          yarn run build
+          yarn build
+          
           echo "Copying to website folder"
           aws s3 sync ./build s3://${AWS_S3_BUCKET}/${PR_ID}/ --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
+          
           echo "Cleaning up things"
           rm -rf ~/.aws
 
       - name: Report
-        run: gh pr comment $PR --body "Preview is at https://d2dc3wdr1yqzl7.cloudfront.net/${{ env.PREVIEW_BRANCH_DIR }}/ "
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_WRITE_PR_COMMENTS }}
           PR: ${{ env.PR_NUMBER }}
+        run: gh pr comment $PR --body "Preview is at https://d2dc3wdr1yqzl7.cloudfront.net/${{ env.PREVIEW_BRANCH_DIR }}/ "
 
 
 
