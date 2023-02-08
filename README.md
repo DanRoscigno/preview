@@ -1,4 +1,17 @@
-# Docusaurus config changes
+# Using S3 and AWS CloudFront for Docusaurus previews
+
+Having previews of documentation changes submitted as pull requests
+is important to encourage doc contributions.  Although Docusaurus 
+itself is very easy to run, some environments have markdown files
+spread out over multiple GitHub repos, and combining these when
+making a change in one repo is an unnecessary burden for the doc
+contributor.  The GitHub workflow in this demo repo provides a 
+method for publishing previews in S3 and serving those with CloudFront.
+
+Although this demo repo does not use markdown files spread out over multiple
+repos, this [will be added](https://github.com/DanRoscigno/preview/issues/13).
+
+## Docusaurus config changes
 
 The config file is `docusaurus.config.js` and in there we need to 
 modify the `baseURL` for each pull request so that we can write to 
