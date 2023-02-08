@@ -43,7 +43,7 @@ jobs:
           rm -rf ~/.aws
 
       - name: Report
-        run: gh pr comment $PR --body "Thank you for opening this PR!"
+        run: gh pr comment $PR --body "Preview is at ${{ env.PREVIEW_BRANCH_DIR }} "
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_WRITE_PR_COMMENTS }}
           PR: ${{ env.PR_NUMBER }}
