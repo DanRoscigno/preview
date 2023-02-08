@@ -46,7 +46,7 @@ jobs:
         run: gh issue comment $PR --body "Thank you for opening this PR!"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ env.PR_NUMBER }}
+          PR: ${{ github.event.pull_request_url }}
 
 
 
