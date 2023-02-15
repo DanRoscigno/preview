@@ -1,0 +1,30 @@
+name: Link Check
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+          
+      - name: build
+        run: |
+          npm install -g yarn
+          yarn install
+          yarn build
+
+      - name: Run htmltest
+        uses: wjdp/htmltest-action@master
+        with:
+          config: .htmltest.yml
+
+      - name: Archive htmltest results
+        uses: actions/upload-artifact@v2
+        with:
+          name: htmltest-report
+          path: tmp/.htmltest/htmltest.log
+          retention-days: 7
+
