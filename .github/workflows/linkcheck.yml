@@ -33,6 +33,7 @@ jobs:
           config: .htmltest.yml
 
       - name: Store cache
+        if: always()
         uses: actions/cache/save@v3
         with:
           path: tmp/.htmltest
