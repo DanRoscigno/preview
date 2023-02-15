@@ -34,7 +34,7 @@ jobs:
           config: .htmltest.yml
 
       - name: Store cache
-        if: steps.restore-cache.outputs.cache-hit != 'true'
+        if: always() && (steps.restore-cache.outputs.cache-hit != 'true')
         uses: actions/cache/save@v3
         with:
           path: tmp/.htmltest
