@@ -16,8 +16,9 @@ jobs:
           yarn install
           yarn build
 
-      - name: Cache htmltest results
+      - name: Restore the cached htmltest results
         uses: actions/cache/restore@v3
+        id: restore-cache
         with:
           path: tmp/.htmltest
           # restore a cache file created against the same set of markdown files if none have changed
@@ -33,7 +34,7 @@ jobs:
           config: .htmltest.yml
 
       - name: Store cache
-        if: always()
+        if: steps.restore-cache.outputs.cache-hit != 'true'`
         uses: actions/cache/save@v3
         with:
           path: tmp/.htmltest
