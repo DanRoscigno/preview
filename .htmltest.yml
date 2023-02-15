@@ -11,4 +11,5 @@ IgnoreURLs:
   - https://62VCH2MD74-dsn.algolia.net
   - https://www.googletagmanager.com
   - http://localhost*
+  - https://your-docusaurus-test-site.com/*
 
