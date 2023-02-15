@@ -19,6 +19,7 @@ jobs:
       - name: Cache htmltest results
         uses: actions/cache/restore@v3
         with:
+          path: tmp/.htmltest
           # restore a cache file created against the same set of markdown files if none have changed
           # (not sure this makes sense)
           key: htmltest-${{ hashFiles('docs/**/*.md') }}
@@ -34,6 +35,7 @@ jobs:
       - name: Store cache
         uses: actions/cache/save@v3
         with:
+          path: tmp/.htmltest
           key: htmltest-${{ hashFiles('docs/**/*.md') }}
 
       - name: Archive htmltest results
