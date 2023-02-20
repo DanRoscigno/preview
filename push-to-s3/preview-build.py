@@ -17,7 +17,8 @@ bucket = os.getenv("AWS_S3_BUCKET")
 local_directory = "./build"
 
 # The folder in the S3 bucket to write to
-destination = os.getenv("PR_NUM")
+destination = '/' + os.getenv("DOSSIER_BASE_URL", "") + '/'
+
 
 client = boto3.client(
     's3',
