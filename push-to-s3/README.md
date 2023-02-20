@@ -15,7 +15,7 @@ python3 -m pip freeze > requirements.txt
 
 ### Build docs
 ```bash
-export =43
+export DOSSIER_BASE_URL=43 # This should be the PR number
 yarn build
 ```
 
@@ -24,7 +24,7 @@ yarn build
 ### Environment vars
 export AWS_S3_KEY_ID=AKIAXXXXXXXXXXXXXXXX
 export AWS_S3_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-export PR_NUM=43
+export DOSSIER_BASE_URL=43
 export AWS_S3_BUCKET=doc-pr-preview
 ```
 
