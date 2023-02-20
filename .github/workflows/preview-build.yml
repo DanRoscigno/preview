@@ -11,8 +11,10 @@ jobs:
           
       - name: Setup Environment
         run: |
+          echo "GITHUB_HEAD_REF is what we get from GitHub=$GITHUB_HEAD_REF"
           export PREVIEW_BRANCH_DIR=$(echo $GITHUB_HEAD_REF | sed -e 's#^refs/heads/##; s#[^0-9a-zA-Z-]#-#g')
           echo "PREVIEW_BRANCH_DIR=$PREVIEW_BRANCH_DIR" >> $GITHUB_ENV
+          echo "PREVIEW_BRANCH_DIR is what we will use a directory name=$PREVIEW_BRANCH_DIR"
 
           export PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV      
