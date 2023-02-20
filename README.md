@@ -96,3 +96,20 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 ```
 
 If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+
+I don't do Python because I never know what version of what
+works with which python code.  This is me trying a virtual
+env.
+
+The Python is in `preview-build.py`
+
+
+### Build docs
+```bash
+export DOSSIER_BASE_URL=43 # This should be the PR number
+yarn build
+```
+
+```
+python3 -m preview-build
+```
